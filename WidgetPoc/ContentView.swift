@@ -1,21 +1,41 @@
-//
-//  ContentView.swift
-//  WidgetPoc
-//
-//  Created by Emilly Maia on 04/06/23.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    
+    let teamData: [Team] = TeamProvider.challengeTeam()
+    @State private var details: Bool = false
+    
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            List {
+                ForEach(teamData, content: { i in
+                    Button(action: {
+                        details.toggle()
+                    }, label: {
+                        TeamItemView(emoji: i.emoji, name: i.name)
+                    })
+                    .sheet(isPresented: $details) {
+                        TeamDescriptionview(team: i)
+                    }
+                })
+            }
+            .foregroundColor(.black)
+            .listStyle(InsetGroupedListStyle())
+            .navigationBarTitle("My Team")
         }
-        .padding()
+    }
+}
+
+struct TeamItemView: View {
+    
+    let emoji: String
+    let name: String
+    
+    var body: some View {
+        Text("\(emoji) \(name)")
+            .font(.largeTitle)
+            .padding([.top, .bottom])
     }
 }
 
